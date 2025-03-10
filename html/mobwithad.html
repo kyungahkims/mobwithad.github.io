@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		:root {
+			--font-family: 'Nanum Gothic';
+			--black-color: #222;
+			--vh: 100%;
+		}
+
+		/* font */
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;900&family=Poppins&display=swap');
+		@import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
+
+		/* Normalize */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		ul {
+			list-style: none;
+		}
+
+		button {
+			font-family: inherit;
+			border: none;
+			cursor: pointer;
+		}
+
+		/********** 1. form_box_wrapper **********/
+		.form_box_wrapper {
+			display: flex;
+			align-items: flex-start;
+			margin-top: 40px;
+		}
+
+		.form_box_wrapper .title {
+			font-size: 14px;
+			line-height: 1.43;
+			color: #333b3d;
+			margin-right: 52px;
+		}
+
+		.form_box {
+			position: relative;
+			max-width: 270px;
+			flex: 18%;
+			height: 140px;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		.form_box button {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: end;
+			align-items: center;
+			padding-bottom: 20px;
+			background-color: #f9f9f9;
+		}
+
+		.form_box button .size {
+			font-size: 14px;
+		}
+
+		.form_box button.active {
+			background-color: #262626;
+		}
+
+		.form_box button.active .size {
+			color: #fff;
+		}
+
+		.form_box .preview {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			width: 20px;
+			height: 20px;
+			background: url('../img/preview.svg') no-repeat center/contain;
+		}
+
+		.form_box .preview.active {
+			background: url('../img/preview2.svg') no-repeat center/contain;
+		}
+
+		.form_box_wrap {
+			flex: 1;
+			flex-wrap: wrap;
+			display: flex;
+			gap: 10px;
+		}
+
+		.form_box_none {
+			display: none;
+			font-size: 14px;
+			color: #ff0c0c;
+		}
+
+		.form_box_none::before {
+			content: "* ";
+		}
+
+		/********** 2. switch **********/
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 32px;
+			height: 14px;
+			font-family: 'Noto Sans KR", serif';
+		}
+
+		.switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+			font-family: 'Noto Sans KR", serif';
+		}
+
+		.switch .slider {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			border-radius: 20px;
+			background-color: #4f4f4f;
+			transition: all 0.3s;
+			cursor: pointer;
+		}
+
+		.switch .slider:before {
+			content: "";
+			position: absolute;
+			left: 3px;
+			bottom: 3px;
+			height: 8px;
+			width: 8px;
+			border-radius: 50%;
+			background-color: #fff;
+			transition: all 0.3s;
+		}
+
+		.switch input:checked+.slider {
+			background-color: #49bd98;
+		}
+
+		.switch input:checked+.slider:before {
+			transform: translateX(18px);
+		}
+
+		.switch .label:before {
+			content: "ON";
+			position: relative;
+			top: -7px;
+			right: 0px;
+			font-size: 8px;
+			font-weight: 300;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		.switch input:not(:checked)~.label:before {
+			content: "OFF";
+			top: -7px;
+			right: -7px;
+		}
+
+		/********** 3. tab **********/
+		.tab {
+			display: flex;
+			color: #333b3d;
+		}
+
+		.tab .tablinks {
+			width: 210px;
+			height: 50px;
+			font-size: 21px;
+			border: 1px solid #d7d7d7;
+			background-color: #ececec;
+		}
+
+		.tab .tablinks.active {
+			border: 1px solid #ebebeb;
+			border-top: 3px solid #262626;
+			background-color: #fff;
+			box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
+		}
+
+		/********** 4. modal_wrap **********/
+		.modal_wrap {
+			display: none;
+			justify-content: center;
+			align-items: center;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 1000;
+			width: 100%;
+			height: 100vh;
+			font-family: var(--font-family);
+			color: #111;
+			background-color: rgba(0, 0, 0, 0.5);
+			transition: all 0.3s;
+
+		}
+
+		.modal_wrap .pop {
+			width: 1020px;
+			border-radius: 15px;
+			box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.15);
+			background-color: #fff;
+			padding: 20px 25px 40px 25px;
+		}
+
+		.modal_wrap .pop_title {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid #e3e3e3;
+			padding-bottom: 20px;
+			margin-bottom: 18px;
+		}
+
+		.modal_wrap .pop_title h3 {
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		.modal_wrap .pop_title button {
+			background-color: transparent;
+		}
+
+		.modal_wrap iframe {
+			width: 100%;
+			max-width: 970px;
+			min-height: 602px;
+			height: 100%;
+			margin-top: 20px;
+		}
+	</style>
+	<script src="../js/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+	<ul>
+		<!-- 1. form_box_wrapper -->
+		<li class="form_box_wrapper">
+			<div class="title">프레임형태*<br>(최소3개 이상 선택)</div>
+			<ul class="form_box_wrap">
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) A</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) B</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) C</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) D</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) E</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) F</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) G</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) H</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) I</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<li class="form_box">
+					<button type="button">
+						<span class="size">네이티브 형태 (프레임형태) J</span>
+					</button>
+					<button type="button" aria-label="미리보기 버튼" class="preview"></button>
+				</li>
+				<!-- 처음 등록 시 화면 제공된 프레임이 없는 경우 display: flex; 처리 -->
+				<li class="form_box_none"><span class="red">제공된 프레임이 없습니다.</span></li>
+			</ul>
+		</li>
+	</ul>
+
+	<!-- 2. switch -->
+	<label class="switch">
+		<input type="checkbox" aria-label="토글 On/Off" checked>
+		<span class="slider"></span>
+		<span class="label" aria-hidden="true"></span>
+	</label>
+
+	<!-- 3. tab -->
+	<div class="tab">
+		<button type="button" class="tablinks">일자별</button>
+		<button type="button" class="tablinks">프레임배너별</button>
+	</div>
+
+	<!-- 4. modal_wrap -->
+	<div class="modal_wrap">
+		<div class="pop">
+			<div class="pop_title">
+				<h3>프레임 미리보기</h3>
+				<button type="button" aria-label="닫기 버튼" class="bt_close"><img src="../img/btn-popup-close.svg"
+						alt="닫기"></button>
+			</div>
+			<h5> - 네이티브 형태 (프레임형태) A</h5>
+			<div>
+				<iframe src="https://ims.mobon.net/Frtb/frame/WY03E46C01W061/sample/WY03E46C01W061.html" frameborder="0"
+					scrolling="no"></iframe>
+			</div>
+		</div>
+	</div>
+	<script>
+		/* 1. form_box_wrapper */
+		$('.form_box_wrapper .form_box_wrap button:nth-child(1)').click(function () {
+			$(this).toggleClass('active');
+			$(this).hasClass('active') ? $(this).next('.preview').addClass('active') : $(this).next('.preview').removeClass(
+				'active');
+		});
+
+		/* 3. tab */
+		$('.tab > .tablinks').click(function () {
+			$('.tab > .tablinks').removeClass('active');
+			$(this).addClass('active');
+		});
+
+		$('.tab > .tablinks').eq(0).trigger('click');
+
+		/* 4. modal_wrap */
+		$('.bt_close').click(function () {
+			$('.modal_wrap').css('display', 'none');
+		});
+
+		$('.pop').click(function (e) {
+			e.stopPropagation();
+		});
+
+		$('.preview').click(function () {
+			$('.modal_wrap').css('display', 'flex');
+		});
+
+		$('.modal_wrap').click(function () {
+			$('.modal_wrap').css('display', 'none');
+		});
+	</script>
+</body>
+
+</html>
